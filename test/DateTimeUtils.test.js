@@ -29,6 +29,13 @@ describe("DateTimeUtils", () => {
       const d3 = new Date(2026, 7, 29, 10, 0, 0)
       assert.strictEqual(DateTimeUtils.isSameDay(d1, d3), false)
     })
+
+    it("returns false when dateA or dateB is null or undefined", () => {
+      assert.strictEqual(DateTimeUtils.isSameDay(null, new Date()), false)
+      assert.strictEqual(DateTimeUtils.isSameDay(new Date(), null), false)
+      assert.strictEqual(DateTimeUtils.isSameDay(undefined, new Date()), false)
+      assert.strictEqual(DateTimeUtils.isSameDay(new Date(), undefined), false)
+    })
   })
 
   describe("daysInMonthUTC()", () => {
@@ -86,9 +93,10 @@ describe("DateTimeUtils", () => {
       assert.strictEqual(parsed.date.toISOString(), "2026-08-28T14:30:00.000Z")
     })
 
-    it("parses 8-digit date strings as all-day events", () => {
+    it("parses 8-digit date strings as all-day events with local date", () => {
       const parsed = DateTimeUtils.parseRfcDate("20260828")
       assert.strictEqual(parsed.allDay, true)
+      assert.strictEqual(parsed.utc, false)
       assert.strictEqual(parsed.date.getFullYear(), 2026)
       assert.strictEqual(parsed.date.getMonth(), 7)
       assert.strictEqual(parsed.date.getDate(), 28)

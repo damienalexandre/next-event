@@ -248,6 +248,7 @@ class DateTimeUtils {
   }
 
   static isSameDay(dateA, dateB) {
+    if (!dateA || !dateB) return false
     return (
       dateA.getFullYear() === dateB.getFullYear() &&
       dateA.getMonth() === dateB.getMonth() &&
@@ -303,19 +304,19 @@ class DateTimeUtils {
         allDay: isDateOnly
       }
     }
-    if (tzid && tzResolver) {
-      return {
-        date: tzResolver.zonedToUtc(tzid, year, month, day, hours, minutes, seconds),
-        utc: false,
-        allDay: isDateOnly,
-        tzid: tzid
-      }
-    }
-    return {
-      date: new Date(year, month - 1, day, hours, minutes, seconds),
-      utc: false,
-      allDay: isDateOnly
-    }
+     if (tzid && tzResolver) {
+       return {
+         date: tzResolver.zonedToUtc(tzid, year, month, day, hours, minutes, seconds),
+         utc: false,
+         allDay: isDateOnly,
+         tzid: tzid
+       }
+     }
+     return {
+       date: new Date(year, month - 1, day, hours, minutes, seconds),
+       utc: false,
+       allDay: isDateOnly
+     }
   }
 
   static parseIsoDate(value) {
