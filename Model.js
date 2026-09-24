@@ -304,19 +304,19 @@ class DateTimeUtils {
         allDay: isDateOnly
       }
     }
-     if (tzid && tzResolver) {
-       return {
-         date: tzResolver.zonedToUtc(tzid, year, month, day, hours, minutes, seconds),
-         utc: false,
-         allDay: isDateOnly,
-         tzid: tzid
-       }
-     }
-     return {
-       date: new Date(year, month - 1, day, hours, minutes, seconds),
-       utc: false,
-       allDay: isDateOnly
-     }
+    if (tzid && tzResolver) {
+      return {
+        date: tzResolver.zonedToUtc(tzid, year, month, day, hours, minutes, seconds),
+        utc: false,
+        allDay: isDateOnly,
+        tzid: tzid
+      }
+    }
+    return {
+      date: new Date(year, month - 1, day, hours, minutes, seconds),
+      utc: false,
+      allDay: isDateOnly
+    }
   }
 
   static parseIsoDate(value) {
@@ -1167,9 +1167,13 @@ class IcsParser {
             ? parseInt(wallMatch[1], 10) * 10000 +
               parseInt(wallMatch[2], 10) * 100 +
               parseInt(wallMatch[3], 10)
-            : dateParsed.date.getUTCFullYear() * 10000 +
-              (dateParsed.date.getUTCMonth() + 1) * 100 +
-              dateParsed.date.getUTCDate()
+            : dateParsed.allDay
+              ? dateParsed.date.getFullYear() * 10000 +
+                (dateParsed.date.getMonth() + 1) * 100 +
+                dateParsed.date.getDate()
+              : dateParsed.date.getUTCFullYear() * 10000 +
+                (dateParsed.date.getUTCMonth() + 1) * 100 +
+                dateParsed.date.getUTCDate()
         } else {
           event.end = dateParsed.date
           var wallEndMatch = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?/.exec(propValue)
@@ -1346,6 +1350,7 @@ class IcsParser {
           start: occStart,
           end: endDate,
           allDay: master.allDay === true,
+          startKey: master.startKey,
           meetUrl: master.meetUrl || null,
           location: master.location || "",
           description: master.description || "",
@@ -1378,6 +1383,7 @@ class IcsParser {
         allDay:
           ov.allDay === true ||
           (ov.allDay === undefined && masterForOv ? masterForOv.allDay === true : false),
+        startKey: ov.startKey || (masterForOv ? masterForOv.startKey : 0),
         meetUrl: ov.meetUrl || (masterForOv ? masterForOv.meetUrl : null),
         location: ov.location || (masterForOv ? masterForOv.location : ""),
         description: ov.description || (masterForOv ? masterForOv.description : ""),

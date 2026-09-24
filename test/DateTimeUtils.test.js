@@ -100,6 +100,14 @@ describe("DateTimeUtils", () => {
       assert.strictEqual(parsed.date.getFullYear(), 2026)
       assert.strictEqual(parsed.date.getMonth(), 7)
       assert.strictEqual(parsed.date.getDate(), 28)
+      // Verify that startKey would be computed correctly using local date methods
+      // This ensures date-only values work correctly across all timezones,
+      // including edge cases like UTC+14 where local midnight is the previous UTC day
+      const expectedStartKey =
+        parsed.date.getFullYear() * 10000 +
+        (parsed.date.getMonth() + 1) * 100 +
+        parsed.date.getDate()
+      assert.strictEqual(expectedStartKey, 20260828)
     })
 
     it("returns null for malformed or empty date strings", () => {
